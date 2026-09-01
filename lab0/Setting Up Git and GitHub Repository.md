@@ -35,7 +35,7 @@ ssh keys are one way other people verify your identity, and we will use it so Gi
 
 Open Git bash run this to generate your ssh key:
 ```bash
-ssh-keygen -t ed25519 -C "YourGitHubUserName@users.noreply.github.com"
+ssh-keygen -t ed25519 -C "Write some comment here such as your email."
 ```
 It will ask you to create a password. Then you should see ``id_ed25519`` and ``id_ed25519.pub`` at ``C:\Users\YourUserName\.ssh`` if you are using Windows.  
 If you can't find it, see https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys
@@ -49,7 +49,7 @@ If you read something like ``-----BEGIN OPENSSH PRIVATE KEY-----`` **STOP**.
 
 1. Log into GitHub
 2. Open https://github.com/settings/ssh/new
-3. Give it a title, then copy the content of your ``id_ed25519.pub`` to the "Key" window. It should begin with something like ``ssh-ed25519`` and end with your email.
+3. Give it a title, then copy the content of your ``id_ed25519.pub`` to the "Key" window. It should begin with something like ``ssh-ed25519``.
 4. Click "add .ssh key"
 
 Once you have done that, try:
