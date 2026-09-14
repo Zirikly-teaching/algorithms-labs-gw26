@@ -1,6 +1,12 @@
 def fibonacci(n):
     global call_count
-    raise NotImplementedError("TODO: replace this line with one that not only calculates, but also counts how many times it has been called.")
+    call_count = call_count + 1
+    if n <= 0:
+        return 0
+    if n == 1:
+        return 1
+    return fibonacci(n-1) + fibonacci(n-2)
+    #raise NotImplementedError("TODO: replace this line with one that not only calculates, but also counts how many times it has been called.")
 
 def is_positive_integer(text):
     try:

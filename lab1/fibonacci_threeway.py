@@ -7,7 +7,13 @@
 # and so on...
 
 def fibonacci_threeway(n):
-    raise NotImplementedError("TODO: replace this line in fibonacci_threeway.py with your solution!")
+    if n <= 0:
+        return 0
+    if n == 1 or n == 2 or n == 3:
+        return 1
+    if n not in cache:
+        cache[n] = fibonacci_threeway(n-1) + fibonacci_threeway(n-2) + fibonacci_threeway(n-3)
+    return cache[n]
 
 def is_positive_integer(text):
     try:
@@ -19,6 +25,7 @@ def is_positive_integer(text):
 if __name__ == "__main__":
     import time
     while True:
+        cache = {}
         text = input("Please enter a positive integer: ")
         if not is_positive_integer(text):
             continue
