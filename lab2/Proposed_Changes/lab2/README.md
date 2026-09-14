@@ -78,19 +78,20 @@ not just their indices. The array state is the state after that comparison.
 
 | Pass | `j` | Values compared | Swap or keep? | Array afterward |
 |---|---|---|---|---|
-| 2 | 0 | TODO | TODO | TODO |
-| 2 | 1 | TODO | TODO | TODO |
-| 2 | 2 | TODO | TODO | TODO |
-| 2 | 3 | TODO | TODO | TODO |
-| 3 | 0 | TODO | TODO | TODO |
-| 3 | 1 | TODO | TODO | TODO |
-| 3 | 2 | TODO | TODO | TODO |
-| 4 | 0 | TODO | TODO | TODO |
-| 4 | 1 | TODO | TODO | TODO |
+| 2 | 0 | `2 > 5`: False | Keep | `[2, 5, 1, 5, 6, 9]` |
+| 2 | 1 | `5 > 1`: True | Swap | `[2, 1, 5, 5, 6, 9]` |
+| 2 | 2 | `5 > 5`: False | Keep | `[2, 1, 5, 5, 6, 9]` |
+| 2 | 3 | `5 > 6`: False | Keep | `[2, 1, 5, 5, 6, 9]` |
+| 3 | 0 | `2 > 1`: True | Swap | `[1, 2, 5, 5, 6, 9]` |
+| 3 | 1 | `2 > 5`: False | Keep | `[1, 2, 5, 5, 6, 9]` |
+| 3 | 2 | `5 > 5`: False | Keep | `[1, 2, 5, 5, 6, 9]` |
+| 4 | 0 | `1 > 2`: False | Keep | `[1, 2, 5, 5, 6, 9]` |
+| 4 | 1 | `2 > 5`: False | Keep | `[1, 2, 5, 5, 6, 9]` |
 
 Record the sorted suffix guaranteed after each pass, the total comparisons,
 and the total swaps. Why does the algorithm stop after Pass 4 even though the
 outer loop permits more passes?
+A: There are 14 total comparisons and 6 swaps. Pass 4 makes no swaps, so the algorithm stops because it knows that the array is in order.
 
 ### 1.2 Insertion Sort: trace only
 
@@ -117,11 +118,11 @@ stops at the index check, so no further element comparison occurs.
 | `i` | Key | Element comparisons in order | Elements shifted | Insertion index | Array after insertion |
 |---|---|---|---|---|---|
 | 1 | 3 | `7 > 3` (true) | 7 | 0 | `[3, 7, 5, 8, 2]` |
-| 2 | 5 | TODO | TODO | TODO | TODO |
-| 3 | 8 | TODO | TODO | TODO | TODO |
-| 4 | 2 | TODO | TODO | TODO | TODO |
+| 2 | 5 | `7 > 5` (true), `3 > 5` (false) | 7 | 1 | `[3, 5, 7, 8, 2]` |
+| 3 | 8 | `7 > 8` (false) | None | 3 | `[3, 5, 7, 8, 2]` |
+| 4 | 2 | `8 > 2; 7 > 2; 5 > 2; 3 > 2;` | 8, 3, 5, 7 | 0 | `[2, 3, 5, 7, 8]` |
 
-Record the total comparisons and total shifts.
+Record the total comparisons **8** and total shifts **6**.
 
 ### 1.3 Short answers
 
@@ -132,10 +133,12 @@ comparing only their numeric values.
 **TODO 1.3A:** On an already sorted array, explain why the provided Bubble Sort
 and Insertion Sort each take O(n) time. What happens to Bubble Sort's best-case
 time if you remove its early-exit check?
+A: They take O(n) time because it goes through the array (n-1) times, and since the array is already sorted, it doesn't need to do the swaps and then exits. The same works with Insertion Sort. It can insert the index in the first index since it is already sorted. However, if you remove Bubble Sort's best-case time, the efficiency will be O(n^2) because it would compare every element next to each other, leading to n(n-1)/2 comparisons.
 
 **TODO 1.3B:** Why do the strict `>` comparisons preserve stability? If Bubble
 Sort uses `>=` instead, does it still sort correctly? Is it still stable? Use
 `[5A, 5B]` to explain.
+A: It would add unnecessary comparisons. If we use >= instead, when we see [5A, 5B], we make the comparison 5A >= 5B. Since the comparison is true (5A = 5B), we swap the two elements to get [5B, 5A]. This means that stability is lost because we reverse the two elements on the first path.
 
 ## Part 2: Lomuto Partition and Quicksort
 
@@ -181,15 +184,18 @@ A swap with the same index is allowed and leaves the array unchanged.
 |---|---|---|---|---|---|
 | Initial | N/A | N/A | None | -1 | `[2, 8, 7, 1, 3, 5, 6, 4]` |
 | 0 | 2 | Yes | 0 and 0 | 0 | `[2, 8, 7, 1, 3, 5, 6, 4]` |
-| 1 | TODO | TODO | TODO | TODO | TODO |
-| 2 | TODO | TODO | TODO | TODO | TODO |
-| 3 | TODO | TODO | TODO | TODO | TODO |
-| 4 | TODO | TODO | TODO | TODO | TODO |
-| 5 | TODO | TODO | TODO | TODO | TODO |
-| 6 | TODO | TODO | TODO | TODO | TODO |
-| Final pivot swap | N/A | N/A | TODO | N/A | TODO |
+| 1 | 8 | No | None | 0 | `[2, 8, 7, 1, 3, 5, 6, 4]` |
+| 2 | 7 | No | None | 0 | `[2, 8, 7, 1, 3, 5, 6, 4]` |
+| 3 | 1 | Yes | 1, 3 | 1 | `[2, 1, 8, 7, 3, 5, 6, 4]` |
+| 4 | 3 | Yes | 2, 4 | 2 | `[2, 1, 3, 8, 7, 5, 6, 4]` |
+| 5 | 5 | No | None | 2 | `[2, 1, 3, 8, 7, 5, 6, 4]` |
+| 6 | 6 | No | None | 2 | `[2, 1, 3, 8, 7, 5, 6, 4]` |
+| Final pivot swap | N/A | N/A | 3, 7 | N/A | `[2, 1, 3, 4, 7, 5, 6, 8]` |
 
 Record the returned pivot index and the left and right subarrays.
+**returned pivot index = 3**
+**left**: [2, 1, 3]
+**right**: [7, 5, 6, 8]
 
 ### 2.2 Implement partitioning
 
@@ -208,6 +214,7 @@ python3 quicksort_practice.py
 
 **TODO 2.3A:** Why is the pivot excluded from the scanning loop? Why do we need
 the final swap?
+A: The pivor is excluded from the scanning loop because we kept it in the last position and are not going to swap it in the end. We use the final swap to place the pivot in its correct position (i + 1) so we know exactly how to split it up into two sub-arrays to sort.
 
 **TODO 2.3B:** For `[5, 5, 5, 5, 5]`, find the final `i`, returned pivot index,
 and sizes of the two recursive subproblems. Explain why repeating this split
@@ -246,6 +253,10 @@ MERGE(left, right)
 
 **TODO 3.1A:** Start with `[7, 2, 6, 3]`. Write the two halves, the single-element
 lists, the two sorted pairs, and the final sorted list.
+**Two halves**: `[7,2]` and `[6, 3]`
+**Single-element lists**: `[7]`, `[2]`, `[6]`, `[3]`
+**Sorted pairs**: `[2, 7]`, `[3, 6]`
+**Final sorted list**: `[2, 3, 6, 7]`
 
 Worked merge example: merging `[2, 7]` and `[3, 6]` takes 2, then 3, then 6.
 The right list is exhausted, so the remaining 7 is appended.
@@ -256,12 +267,13 @@ list on equal values. `i` and `j` below are their values before the comparison.
 | `i` | `j` | Values compared | Take from left or right? | Result so far |
 |---|---|---|---|---|
 | 0 | 0 | 2 and 1 | Right | `[1]` |
-| TODO | TODO | TODO | TODO | TODO |
-| TODO | TODO | TODO | TODO | TODO |
-| TODO | TODO | TODO | TODO | TODO |
-| TODO | TODO | TODO | TODO | TODO |
+| 0 | 1 | 2 and 5 | Left | `[1, 2]` |
+| 1 | 1 | 5 and 5 | Left | `[1, 2, 5]` |
+| 2 | 1 | 8 and 5 | Right | `[1, 2, 5, 5]` |
+| 2 | 2 | 8 and 9 | Left | `[1, 2, 5, 5, 8]` |
 
 Which list has elements remaining, and what is appended after the loop?
+A: The right list has an element (9) remaining, and is appended after the loop
 
 ### 3.2 Implement merging
 
@@ -281,6 +293,7 @@ python3 mergesort_practice.py
 **TODO 3.2A:** Why must `merge` copy the remaining elements after one input is
 exhausted? What goes wrong if the function returns immediately after its main
 comparison loop?
+A: If the function returns immediately after the main comparison loop, we might have elements left over from either the left or right input that need to be added, so the final ordered list would never be complete and never have elements left over. 
 
 For context, merging n total elements takes O(n) time. Merge Sort has O(log n)
 splitting levels and O(n) merging work per level, giving O(n log n) time.
@@ -318,6 +331,10 @@ For `[4, 10, 8, 30, 15, 20, 16]`, the levels are:
 **TODO 4.1:** Find the child indices and values of index 1, the parent index and
 value of index 6, and all leaf indices. Is this a min-heap? Explain using the
 parent-child comparisons, not whether the list looks sorted.
+Index 1 has children at 3 and 4
+The parent index of index 6 is 2 and the value of index 6 is 20
+Leafs at at indices 3, 4, 5, and 6. 
+This is a min heap because because the values of the children node are greater than their parents
 
 ### 4.2 Restore the heap with sift-down
 
@@ -345,6 +362,11 @@ MIN-HEAPIFY-DOWN(arr, i, heap_size)
 **TODO 4.2A:** Trace sift-down on `[25, 10, 8, 30, 15, 20, 16]`, starting at
 `i = 0`, with `heap_size = 7`. Record each swap and resulting array. Explain
 why the smaller child must be chosen, and why the process stops.
+Start: `[25, 10, 8, 30, 15, 20, 16]`
+Swap indices 0 and 2: `[8, 10, 25, 30, 15, 20, 16]`
+Stop at index 3 becuase it has no children in the active heap
+
+We choose the smaller child because we want the root to swap with the smaller value to make it less than or equal to both children at the old parent position. The process stops when it has no children in the active heap. 
 
 **TODO 4.2B:** Implement `min_heapify_down` in `heapsort_practice.py`. Modify the
 list in place and return `None`. The suffix starting at `heap_size` is outside
@@ -386,6 +408,10 @@ python3 heapsort_practice.py
 one Heapsort extraction: swap the root with the last active element, reduce
 the active heap size, and sift down. Record the full array, active heap size,
 and sorted suffix afterward. Why must sift-down exclude that suffix?
+
+Swap indices 0 and 6: `[16, 10, 8, 30, 15, 20, 4]`
+Heap size = 6. Swap indices 0 and 1: `[10, 16, 8, 30, 15, 20, 4]`
+Sift-down excludes the suffix because it contains values in its final sorted position.
 
 Heap construction takes O(n) time. Each extraction uses at most O(log n)
 sift-down work, so Heapsort takes O(n log n) time overall. The iterative
