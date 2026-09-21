@@ -36,7 +36,7 @@ This lab uses two primary tree representations:
 | `lab_checks.py` | Provided checks and profiling demonstration; do not edit |
 
 - [x] Part 1: Max-Heap sift-down trace, Heapsort extraction trace, implementation, and short answers.
-- [ ] Part 2: BST insertion and deletion traces, implementation, and short answers.
+- [x] Part 2: BST insertion and deletion traces, implementation, and short answers.
 - [ ] Part 3: Imbalance search path trace, balance factor calculations, violation diagnostics, and short answers.
 - [ ] Part 4: AVL rotation trace, implementations, and short answers.
 - [ ] Run all three practice files and resolve all failed checks.
