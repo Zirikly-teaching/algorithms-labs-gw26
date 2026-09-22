@@ -104,6 +104,33 @@ def verify_bst_invariants(tree):
   check_node(tree.root, float("-inf"), float("inf"))
 
 
+def verify_avl_invariants(tree):
+  """Verify BST ordering, parent pointers, stored heights, and AVL balance."""
+  verify_bst_invariants(tree)
+
+  def check_node(node):
+    if node is None:
+      return -1
+
+    left_height = check_node(node.left)
+    right_height = check_node(node.right)
+    expected_height = 1 + max(left_height, right_height)
+
+    require(
+      node.height == expected_height,
+      "Incorrect stored height at key " + str(node.key)
+      + ": expected " + str(expected_height)
+      + ", found " + str(node.height)
+    )
+    require(
+      abs(left_height - right_height) <= 1,
+      "AVL balance invariant violated at key " + str(node.key)
+    )
+    return expected_height
+
+  check_node(tree.root)
+
+
 # Test suites
 def check_heap(max_heapify_down, build_max_heap, heap_sort):
   def heapify_case(values, i, heap_size):
@@ -255,7 +282,15 @@ def check_bst(bst_insert, bst_delete):
   return run_checks(cases)
 
 
-def check_rotations(balance_factor, rotate_left, rotate_right, rotate_left_right, rotate_right_left):
+def check_rotations(
+  balance_factor,
+  rotate_left,
+  rotate_right,
+  rotate_left_right,
+  rotate_right_left,
+  avl_insert_iterative,
+  avl_insert_recursive
+):
   def test_balance_factor_values():
     node = Node(20)
     require(balance_factor(node) == 0, "Leaf balance factor must be 0")
@@ -387,6 +422,48 @@ def check_rotations(balance_factor, rotate_left, rotate_right, rotate_left_right
     require(n20.right is n30 and n30.parent is n20, "30 is right child of 20")
     require(inorder_walk(tree.root) == [10, 20, 30], "In-order traversal preserved")
 
+  def insertion_case(insert, keys, expected_root):
+    tree = BinarySearchTree()
+    inserted_keys = []
+
+    for key in keys:
+      inserted = insert(tree, key)
+      inserted_keys.append(key)
+
+      require(inserted is not None, "Insertion must return the new Node")
+      require(inserted.key == key, "Returned Node must contain the inserted key")
+
+      current = tree.root
+      while current is not None and current.key != key:
+        current = current.left if key < current.key else current.right
+      require(current is inserted, "Returned Node must be linked into the tree")
+
+      verify_avl_invariants(tree)
+      require(
+        inorder_walk(tree.root) == sorted(inserted_keys),
+        "In-order traversal must contain every inserted key in sorted order"
+      )
+
+    require(
+      tree.root.key == expected_root,
+      "Expected root " + str(expected_root) + ", found " + str(tree.root.key)
+    )
+
+  def test_insert_rotation_cases(insert):
+    insertion_case(insert, [42], 42)
+    insertion_case(insert, [30, 20, 10], 20)  # LL
+    insertion_case(insert, [10, 20, 30], 20)  # RR
+    insertion_case(insert, [30, 10, 20], 20)  # LR
+    insertion_case(insert, [10, 30, 20], 20)  # RL
+
+  def test_insert_larger_tree(insert):
+    insertion_case(
+      insert,
+      [50, 30, 70, 20, 40, 60, 80, 10, 25, 35, 45, 55, 65, 75, 85,
+       5, 15, 27, 90, 100],
+      50
+    )
+
   def demo_degeneration_profiling():
     # Demonstration comparing search depth on degenerate vs balanced BST
     n = 1000
@@ -465,6 +542,14 @@ def check_rotations(balance_factor, rotate_left, rotate_right, rotate_left_right
     ("Rotate right on interior subtree", test_rotate_interior_subtree),
     ("Double rotation rotate_left_right (LR signature)", test_double_rotation_left_right),
     ("Double rotation rotate_right_left (RL signature)", test_double_rotation_right_left),
+    ("Iterative AVL insertion handles LL, RR, LR, and RL",
+     lambda: test_insert_rotation_cases(avl_insert_iterative)),
+    ("Iterative AVL insertion maintains a larger tree",
+     lambda: test_insert_larger_tree(avl_insert_iterative)),
+    ("Recursive AVL insertion handles LL, RR, LR, and RL",
+     lambda: test_insert_rotation_cases(avl_insert_recursive)),
+    ("Recursive AVL insertion maintains a larger tree",
+     lambda: test_insert_larger_tree(avl_insert_recursive)),
     ("Imbalance profiling demonstration", demo_degeneration_profiling),
   ]
 

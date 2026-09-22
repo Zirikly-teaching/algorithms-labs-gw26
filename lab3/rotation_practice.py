@@ -1,4 +1,4 @@
-"""Part 4: implement AVL balance factor calculation, single rotations, and double rotations.
+"""Parts 4-5: implement AVL rotations plus iterative and recursive insertion.
 
 Node structure, tree container, and height maintenance helpers are provided.
 """
@@ -23,6 +23,57 @@ class BinarySearchTree:
 
   def __init__(self):
     self.root = None
+
+  def print_tree(self):
+    """Print the full tree with child labels, heights, balance factors, and parents.
+
+    This provided debugging helper reports the values currently stored in the
+    nodes. It also marks repeated node references so an accidental pointer cycle
+    does not cause infinite recursion.
+    """
+    if self.root is None:
+      print("(empty tree)")
+      return
+
+    seen = set()
+
+    def node_summary(node):
+      left_height = -1 if node.left is None else node.left.height
+      right_height = -1 if node.right is None else node.right.height
+      bf = left_height - right_height
+      parent_key = "None" if node.parent is None else str(node.parent.key)
+      return (
+        str(node.key)
+        + " [height=" + str(node.height)
+        + ", bf=" + str(bf)
+        + ", parent=" + parent_key + "]"
+      )
+
+    def print_children(node, prefix):
+      if node.left is None and node.right is None:
+        return
+
+      children = [("L", node.left), ("R", node.right)]
+      for index, (direction, child) in enumerate(children):
+        is_last = index == len(children) - 1
+        connector = "└── " if is_last else "├── "
+        child_prefix = prefix + ("    " if is_last else "│   ")
+
+        if child is None:
+          print(prefix + connector + direction + ": None")
+        elif id(child) in seen:
+          print(
+            prefix + connector + direction + ": "
+            + node_summary(child) + " [cycle or repeated reference]"
+          )
+        else:
+          seen.add(id(child))
+          print(prefix + connector + direction + ": " + node_summary(child))
+          print_children(child, child_prefix)
+
+    seen.add(id(self.root))
+    print(node_summary(self.root))
+    print_children(self.root, "")
 
 
 def get_height(node):
@@ -85,6 +136,28 @@ def rotate_right_left(tree, z):
   raise NotImplementedError("Complete rotate_right_left")
 
 
+def avl_insert_iterative(tree, key):
+  """Insert a distinct key iteratively, rebalance the AVL tree, and return its Node.
+
+  First perform an iterative BST insertion. Then walk upward toward the root,
+  updating heights and applying the appropriate LL, RR, LR, or RL rotation.
+  Preserve every child and parent pointer, including tree.root.parent == None.
+  """
+  # TODO 5.1: Insert with a loop, then retrace the parent path and rebalance.
+  raise NotImplementedError("Complete avl_insert_iterative")
+
+
+def avl_insert_recursive(tree, key):
+  """Insert a distinct key recursively, rebalance the AVL tree, and return its Node.
+
+  Use a recursive helper that returns the root of the updated subtree. On the
+  way back up the call stack, update heights and repair any AVL violation.
+  Preserve every child and parent pointer, including tree.root.parent == None.
+  """
+  # TODO 5.2: Recursively insert, then update and rebalance while unwinding.
+  raise NotImplementedError("Complete avl_insert_recursive")
+
+
 if __name__ == "__main__":
   from lab_checks import check_rotations
   raise SystemExit(
@@ -93,6 +166,8 @@ if __name__ == "__main__":
       rotate_left,
       rotate_right,
       rotate_left_right,
-      rotate_right_left
+      rotate_right_left,
+      avl_insert_iterative,
+      avl_insert_recursive
     )
   )
