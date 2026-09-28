@@ -6,7 +6,7 @@ nav_exclude: true
 
 # AVL Rotation Images and Cases
 
-[&larr; Back to Lab 3](README.md)
+[&larr; Back to Lab 4](README.md)
 
 AVL rotations repair a local imbalance without changing the tree's in-order
 traversal. The examples below use the keys `1`, `2`, and `3`, so the valid
@@ -14,11 +14,9 @@ in-order traversal is always `[1, 2, 3]`.
 
 The balance factor used in this lab is
 
-$$
-\operatorname{BF}(v)
-= \operatorname{height}(v.\text{left})
-- \operatorname{height}(v.\text{right}).
-$$
+```text
+BF(v) = height(v.left) - height(v.right)
+```
 
 - A positive balance factor means the node is left-heavy.
 - A negative balance factor means the node is right-heavy.
@@ -158,4 +156,4 @@ rotate left at node `1`. Node `2` becomes the root, with `1` on its left and
 - The second step is one of the single rotations already used for LL or RR.
 - Every case preserves the in-order traversal `[1, 2, 3]`.
 
-[&larr; Return to the Lab 3 instructions](README.md)
+[&larr; Return to the Lab 4 instructions](README.md)

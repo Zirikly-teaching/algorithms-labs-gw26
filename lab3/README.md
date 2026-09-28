@@ -4,13 +4,12 @@ title: Lab 3
 nav_order: 4
 ---
 
-# CSCI 3212 Lab 3: Heaps, Binary Search Trees, and AVL Rotations
+# CSCI 3212 Lab 3: Heaps and Binary Search Trees
 
 In this lab, you will explore both array-based binary trees and pointer-based
 binary search trees. You will implement Max-Heap sift-down and the ascending
 Heapsort algorithm structure, trace and implement pointer-based BST insertion
-and deletion, profile structural imbalance, calculate AVL balance factors, and
-implement atomic single and double rotations.
+and deletion, and profile structural imbalance.
 
 This lab uses two primary tree representations:
 
@@ -22,32 +21,28 @@ This lab uses two primary tree representations:
    references (`left`, `right`, `parent`). For two-child BST deletions, the
    **in-order successor** (minimum of the right subtree) replaces the deleted
    node. Subtree height is defined such that an empty child has height `-1` and
-   a leaf has height `0`. Balance factors are computed as
-   $\text{BF}(v) = \text{height}(v.\text{left}) - \text{height}(v.\text{right})$.
+   a leaf has height `0`.
 
 ## Files and deliverables
 
-| File                   | Your work                                                                                               |
-| ---------------------- | ------------------------------------------------------------------------------------------------------- |
-| `README.md`            | Complete the trace tables and written responses in your lab notes or a copy of this file                |
-| `heap_practice.py`     | Implement `max_heapify_down` and complete `heap_sort`; bottom-up heap construction is provided          |
-| `bst_practice.py`      | Implement `bst_insert` and `bst_delete`; search, minimum, and transplant are provided                   |
-| `rotation_practice.py` | Implement `balance_factor`, `rotate_left`, `rotate_right`, `rotate_left_right`, and `rotate_right_left` |
-| `lab_checks.py`        | Provided checks and profiling demonstration; do not edit                                                |
+| File               | Your work                                                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| `README.md`        | Complete the trace tables and written responses in your lab notes or a copy of this file       |
+| `heap_practice.py` | Implement `max_heapify_down` and complete `heap_sort`; bottom-up heap construction is provided |
+| `bst_practice.py`  | Implement `bst_insert` and `bst_delete`; search, minimum, and transplant are provided          |
+| `lab_checks.py`    | Provided checks; do not edit                                                                   |
 
 - [ ] Part 1: Max-Heap sift-down trace, Heapsort extraction trace,
       implementation, and short answers.
 - [ ] Part 2: BST insertion and deletion traces, implementation, and short
       answers.
-- [ ] Part 3: Imbalance search path trace, balance factor calculations,
-      violation diagnostics, and short answers.
-- [ ] Part 4: AVL rotation trace, implementations, and short answers.
-- [ ] Run all three practice files and resolve all failed checks.
+- [ ] Part 3: Compare search paths in degenerate and balanced BSTs.
+- [ ] Run both practice files and resolve all failed checks.
 
 Keep the function names and parameters unchanged. Do not use `sorted`,
 `list.sort`, or `heapq` to implement the required functions. The provided checks
 inspect array mutations, pointer identities, in-order traversals, parent
-references, and node heights directly.
+references directly.
 
 ## Counting and height conventions
 
@@ -56,10 +51,6 @@ references, and node heights directly.
 - Height of a leaf node (both children `None`) is `0`.
 - Height of an internal node is
   $1 + \max(\text{height}(\text{left}), \text{height}(\text{right}))$.
-- Balance factor is
-  $\text{height}(v.\text{left}) - \text{height}(v.\text{right})$.
-- An AVL node is balanced if $\text{BF}(v) \in \{-1, 0, 1\}$. It is left-heavy
-  if $\text{BF}(v) > 0$ and right-heavy if $\text{BF}(v) < 0$.
 - Depth of the root is `0`. Depth increases by `1` along each downward edge.
 - Search comparisons count comparisons between element keys.
 
@@ -371,7 +362,7 @@ $O(1)$ auxiliary space.
 
 ---
 
-## Part 3: Structural Degeneration, Balance Factors, and Diagnostics
+## Part 3: Structural Degeneration
 
 Because an unaugmented BST does not rebalance itself, its shape is determined by
 the order in which keys are inserted.
@@ -389,248 +380,25 @@ $\lfloor \log_2 n \rfloor = 2$ with $O(\log n)$ search depth.
 | **Degenerate BST** | Ascending: `[1, 2, 3, 4, 5, 6, 7]`     | $n - 1 = 6$                    | $O(n)$            |
 | **Balanced BST**   | Medians first: `[4, 2, 6, 1, 3, 5, 7]` | $\lfloor \log_2 n \rfloor = 2$ | $O(\log n)$       |
 
-### 3.1 Trace: Search Path Comparison
+### 3.1 Search-path comparison
 
-Consider searching for target key `7` in both trees.
+Search for key `7` in each tree above. Record the nodes visited in order (ie:
+`1->2->3`) and the total number of key comparisons.
 
-**TODO 3.1:** Complete the table tracing the search path for target key `7` in
-the degenerate tree versus the balanced tree.
-
-| Step | Degenerate BST: Node visited | Degenerate: Key comparison | Degenerate: Node depth | Balanced BST: Node visited | Balanced: Key comparison | Balanced: Node depth |
-| ---- | ---------------------------- | -------------------------- | ---------------------- | -------------------------- | ------------------------ | -------------------- |
-| 1    | 1                            | `7 > 1` (go right)         | 0                      | 4                          | `7 > 4` (go right)       | 0                    |
-| 2    | TODO                         | TODO                       | TODO                   | TODO                       | TODO                     | TODO                 |
-| 3    | TODO                         | TODO                       | TODO                   | TODO                       | TODO                     | TODO                 |
-| 4    | TODO                         | TODO                       | TODO                   | —                          | —                        | —                    |
-| 5    | TODO                         | TODO                       | TODO                   | —                          | —                        | —                    |
-| 6    | TODO                         | TODO                       | TODO                   | —                          | —                        | —                    |
-| 7    | TODO                         | TODO                       | TODO                   | —                          | —                        | —                    |
-
-Record total comparisons: Degenerate: **TODO**, Balanced: **TODO**.
-
-### Height balance factors and violation signatures
-
-An **AVL tree** maintains the **balance invariant**:
-$$\text{BF}(v) = \text{height}(v.\text{left}) - \text{height}(v.\text{right}) \in \{-1, 0, 1\} \quad \text{for all nodes } v$$
-
-When a node insertion causes $|\text{BF}(z)| \ge 2$ at some ancestor $z$, an
-imbalance has occurred. The lowest ancestor where this violation occurs is
-categorized into one of four **violation signatures**:
-
-| Signature | Name        | Condition at ancestor $z$ | Condition at heavier child        | Required rebalancing action                                       |
-| --------- | ----------- | ------------------------- | --------------------------------- | ----------------------------------------------------------------- |
-| **LL**    | Left-Left   | $\text{BF}(z) = +2$       | $\text{BF}(z.\text{left}) \ge 0$  | Single `rotate_right(tree, z)`                                    |
-| **RR**    | Right-Right | $\text{BF}(z) = -2$       | $\text{BF}(z.\text{right}) \le 0$ | Single `rotate_left(tree, z)`                                     |
-| **LR**    | Left-Right  | $\text{BF}(z) = +2$       | $\text{BF}(z.\text{left}) < 0$    | Double: `rotate_left(tree, z.left)` then `rotate_right(tree, z)`  |
-| **RL**    | Right-Left  | $\text{BF}(z) = -2$       | $\text{BF}(z.\text{right}) > 0$   | Double: `rotate_right(tree, z.right)` then `rotate_left(tree, z)` |
-
-**An AVL violation occurs at the lowest ancestor where the height difference
-between left and right subtrees reaches 2 or -2, and the required rotation is
-uniquely determined by the sign of the ancestor's balance factor and its heavier
-child's balance factor.**
-
-### 3.2 Trace: Heights and Balance Factors
-
-Consider four 3-node trees constructed by inserting keys in different orders:
-
-- **Tree 1 (Keys [30, 20, 10]):** 30 has left child 20; 20 has left child 10.
-- **Tree 2 (Keys [10, 20, 30]):** 10 has right child 20; 20 has right child 30.
-- **Tree 3 (Keys [30, 10, 20]):** 30 has left child 10; 10 has right child 20.
-- **Tree 4 (Keys [10, 30, 20]):** 10 has right child 30; 30 has left child 20.
-
-**TODO 3.2:** Complete the table below computing height and balance factor for
-each node. Remember that an empty child has height `-1`. Tree 1 is worked.
-
-| Tree   | Node key | Subtree height | Left child height | Right child height | Balance factor $\text{BF}$ |
-| ------ | -------- | -------------- | ----------------- | ------------------ | -------------------------- |
-| 1 (LL) | 10       | 0              | -1                | -1                 | 0                          |
-| 1 (LL) | 20       | 1              | 0                 | -1                 | +1                         |
-| 1 (LL) | 30       | 2              | 1                 | -1                 | +2                         |
-| 2 (RR) | 30       | TODO           | TODO              | TODO               | TODO                       |
-| 2 (RR) | 20       | TODO           | TODO              | TODO               | TODO                       |
-| 2 (RR) | 10       | TODO           | TODO              | TODO               | TODO                       |
-| 3 (LR) | 20       | TODO           | TODO              | TODO               | TODO                       |
-| 3 (LR) | 10       | TODO           | TODO              | TODO               | TODO                       |
-| 3 (LR) | 30       | TODO           | TODO              | TODO               | TODO                       |
-| 4 (RL) | 20       | TODO           | TODO              | TODO               | TODO                       |
-| 4 (RL) | 30       | TODO           | TODO              | TODO               | TODO                       |
-| 4 (RL) | 10       | TODO           | TODO              | TODO               | TODO                       |
-
-### 3.3 Trace: Violation Diagnostics
-
-**TODO 3.3:** For each of the four trees above, identify the unbalanced ancestor
-$z$, diagnose its violation signature (LL, RR, LR, or RL), and specify the exact
-rotation function call(s) required to restore balance. Tree 1 is worked.
-
-| Tree | Unbalanced node $z$ | $\text{BF}(z)$ | Child node inspected | Child $\text{BF}$ | Signature | Restorative rotation call(s) |
-| ---- | ------------------- | -------------- | -------------------- | ----------------- | --------- | ---------------------------- |
-| 1    | 30                  | +2             | 20                   | +1                | LL        | `rotate_right(tree, 30)`     |
-| 2    | TODO                | TODO           | TODO                 | TODO              | TODO      | TODO                         |
-| 3    | TODO                | TODO           | TODO                 | TODO              | TODO      | TODO                         |
-| 4    | TODO                | TODO           | TODO                 | TODO              | TODO      | TODO                         |
-
-### 3.4 Short answers
-
-**TODO 3.4A:** What common real-world data patterns (such as timestamped logs or
-pre-sorted datasets) inadvertently construct worst-case degenerate BSTs?
-
-**TODO 3.4B:** Why does a single right rotation around node `30` fail to balance
-Tree 3 (the Left-Right tree with keys 30, 10, 20)? What structure results if a
-single rotation is attempted?
-
-The test suite in `lab_checks.py` demonstrates the difference empirically by
-searching 1,000 keys: 999 comparisons on a degenerate tree versus only 8 on a
-balanced tree. AVL trees strictly guarantee height $h < 1.44 \log_2(n + 2)$,
-ensuring $O(\log n)$ worst-case search.
-
----
-
-## Part 4: AVL Rotation Primitives
-
-Rotations are local pointer-rewiring transformations that alter the height of
-subtrees without altering the in-order traversal of keys.
-
-Before implementing the rotation functions, work through the illustrated cases:
-
-**Visual guide:** [AVL Rotation Images and Cases](AVL_ROTATION_GUIDE.md)
-
-The guide presents the cases in increasing order of complexity: **LL**, **RR**,
-**LR**, and **RL**. It shows the tree after each available rotation and explains
-how the missing final RL drawing mirrors the simpler RR rotation.
-
-**Rotations alter the pointer structure and heights of nodes to restore balance
-while strictly preserving the in-order traversal order of all keys.**
-
-### Single Right Rotation (`rotate_right(tree, y)`)
-
-In a right rotation around node $y$, $y$'s left child $x$ becomes the new root
-of the subtree:
-
-1. $x$'s right subtree becomes $y$'s left subtree.
-2. $y$ becomes $x$'s right child.
-3. Parent pointers are updated for $x$, $y$, and the transferred subtree.
-4. The heights of $y$ and $x$ are recalculated (in that order: $y$ first, then
-   $x$).
-
-### Single Left Rotation (`rotate_left(tree, x)`)
-
-The symmetric mirror of right rotation: $x$'s right child $y$ becomes the new
-root of the subtree:
-
-1. $y$'s left subtree becomes $x$'s right subtree.
-2. $x$ becomes $y$'s left child.
-3. Parent pointers are updated for $y$, $x$, and the transferred subtree.
-4. The heights of $x$ and $y$ are recalculated (in that order: $x$ first, then
-   $y$).
-
-### Double Rotations
-
-- **`rotate_left_right(tree, z)`**: Performs `rotate_left(tree, z.left)`
-  followed by `rotate_right(tree, z)`.
-- **`rotate_right_left(tree, z)`**: Performs `rotate_right(tree, z.right)`
-  followed by `rotate_left(tree, z)`.
-
-### Pseudocode
-
-```text
-ROTATE-LEFT(T, x)
-  y = x.right
-  x.right = y.left
-  if y.left != None
-    y.left.parent = x
-  y.parent = x.parent
-  if x.parent == None
-    T.root = y
-  else if x == x.parent.left
-    x.parent.left = y
-  else
-    x.parent.right = y
-  y.left = x
-  x.parent = y
-  UPDATE-HEIGHT(x)
-  UPDATE-HEIGHT(y)
-
-ROTATE-RIGHT(T, y)
-  x = y.left
-  y.left = x.right
-  if x.right != None
-    x.right.parent = y
-  x.parent = y.parent
-  if y.parent == None
-    T.root = x
-  else if y == y.parent.left
-    y.parent.left = x
-  else
-    y.parent.right = x
-  x.right = y
-  y.parent = x
-  UPDATE-HEIGHT(y)
-  UPDATE-HEIGHT(x)
-
-ROTATE-LEFT-RIGHT(T, z)
-  ROTATE-LEFT(T, z.left)
-  ROTATE-RIGHT(T, z)
-
-ROTATE-RIGHT-LEFT(T, z)
-  ROTATE-RIGHT(T, z.right)
-  ROTATE-LEFT(T, z)
-```
-
-### 4.1 Trace: Right Rotation
-
-Trace `rotate_right(tree, 30)` on Tree 1 (keys `[30, 20, 10]`, where 30 is the
-root, 20 is its left child, and 10 is 20's left child).
-
-**TODO 4.1:** Complete the table below comparing the pointers and heights of the
-three nodes before and after `rotate_right(tree, 30)`. The first two rows are
-worked.
-
-| Node key | Parent before | Left child before | Right child before | Height before | Parent after | Left child after | Right child after | Height after |
-| -------- | ------------- | ----------------- | ------------------ | ------------- | ------------ | ---------------- | ----------------- | ------------ |
-| 30       | None          | 20                | None               | 2             | 20           | None             | None              | 0            |
-| 20       | 30            | 10                | None               | 1             | None (Root)  | 10               | 30                | 1            |
-| 10       | TODO          | TODO              | TODO               | TODO          | TODO         | TODO             | TODO              | TODO         |
-
-Confirm that the in-order traversal of the keys remains `[10, 20, 30]` both
-before and after the rotation.
-
-### 4.2 Implementation
-
-Open `rotation_practice.py` and implement the five functions:
-
-- **TODO 4.2A:** `balance_factor(node)`
-- **TODO 4.2B:** `rotate_left(tree, x)`
-- **TODO 4.2C:** `rotate_right(tree, y)`
-- **TODO 4.2D:** `rotate_left_right(tree, z)`
-- **TODO 4.2E:** `rotate_right_left(tree, z)`
-
-```bash
-python3 rotation_practice.py
-```
-
-### 4.3 Short answers
-
-**TODO 4.3A:** When rotating node $x$ to the left around child $y$, why must the
-height of $x$ be recalculated before the height of $y$?
-
-**TODO 4.3B:** Why do single and double rotations execute in strictly $O(1)$
-time, regardless of whether the tree contains 3 nodes or 3,000,000 nodes?
-
-A single rotation modifies a fixed set of 6 pointers and updates 2 height
-fields, taking $\Theta(1)$ time and $\Theta(1)$ auxiliary space. A double
-rotation consists of two single rotations, also running in $\Theta(1)$ time and
-$\Theta(1)$ auxiliary space.
+| Tree           | Search path to key `7` | Total comparisons |
+| -------------- | ---------------------- | ----------------- |
+| Degenerate BST |                        |                   |
+| Balanced BST   |                        |                   |
 
 ---
 
 ## Final check
 
-Run all three practice files from within the `lab_3/` directory:
+Run both practice files from within the `lab3/` directory:
 
 ```bash
 python3 heap_practice.py
 python3 bst_practice.py
-python3 rotation_practice.py
 ```
 
 - Any unfinished function reports `[TODO]`.
@@ -638,4 +406,4 @@ python3 rotation_practice.py
 - Any fully working function reports `[PASS]`.
 
 Each practice file exits with a nonzero exit code if any check is unfinished or
-failing. When all checks pass, all three commands return exit code `0`.
+failing. When all checks pass, both commands return exit code `0`.
