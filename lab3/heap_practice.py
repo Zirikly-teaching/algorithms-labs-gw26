@@ -2,6 +2,17 @@
 
 
 def max_heapify_down(arr, i, heap_size):
+  largest = i
+  l = 2 * i + 1
+  r = 2 * i + 2
+  if l < heap_size and arr[l] > arr[largest]:
+    largest = l
+    if r < heap_size and arr[r] > arr[largest]:
+      largest = r
+      if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        max_heapify_down(arr, largest, heap_size)
+
   """Repair the max-heap property at index i in place and return None.
 
   Preconditions: 0 <= heap_size <= len(arr). For a nonempty heap,
@@ -22,8 +33,9 @@ def heap_sort(arr):
   """Sort arr in ascending order in place and return the same list object."""
   build_max_heap(arr)
   for end in range(len(arr) - 1, 0, -1):
+    arr[0], arr[end] = arr[end], arr[0]
     # TODO 1.3B: Swap root with end, then repair the reduced active heap of size end.
-    raise NotImplementedError("Complete the heap_sort loop")
+    max_heapify_down(arr, 0, end)
   return arr
 
 
