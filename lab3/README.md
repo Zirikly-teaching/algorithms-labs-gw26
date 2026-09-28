@@ -136,8 +136,8 @@ and the array state after each step. The first row is worked.
 | Step | Current `i` | Value at `i` | Children (left, right) | Largest index | Action taken | Array afterward |
 |---|---|---|---|---|---|---|
 | 1 | 0 | 4 | `left=1` (10), `right=2` (8) | 1 | Swap `arr[0]` with `arr[1]` | `[10, 4, 8, 5, 1, 2, 7]` |
-| 2 | TODO | TODO | TODO | TODO | TODO | TODO |
-| 3 | TODO | TODO | TODO | TODO | TODO | TODO |
+| 2 | 1 | 4 | `left=3` (5), `right=4` (1) | 3 | Swap `arr[1]` with `arr[3]` | `[10, 5, 8, 4, 1, 2, 7]` |
+| 3 | 3 | 4 | `left=7` (-), `right=8` (-) | break | break | break |
 
 ### 1.2 Trace: Heapsort extraction passes
 
@@ -150,11 +150,11 @@ the growing sorted suffix. Pass 1 is worked.
 | Pass (`end`) | Swap root with `arr[end]` | Active heap size | Active heap after `max_heapify_down` | Sorted suffix | Full array afterward |
 |---|---|---|---|---|---|
 | 6 | Swap `15` with `7` | 6 | `[12, 7, 8, 6, 2, 3]` | `[15]` | `[12, 7, 8, 6, 2, 3, 15]` |
-| 5 | TODO | TODO | TODO | TODO | TODO |
-| 4 | TODO | TODO | TODO | TODO | TODO |
-| 3 | TODO | TODO | TODO | TODO | TODO |
-| 2 | TODO | TODO | TODO | TODO | TODO |
-| 1 | TODO | TODO | TODO | TODO | TODO |
+| 5 | Swap `12` with `15` | 6 | `[15, 8, 7, 6, 2, 3]` | `[12]` | `[15, 8, 7, 6, 2, 3, 12]` |
+| 4 | Swap `15` with `7` | TODO | TODO | TODO | TODO |
+| 3 | Swap `15` with `7` | TODO | TODO | TODO | TODO |
+| 2 | Swap `15` with `7` | TODO | TODO | TODO | TODO |
+| 1 | Swap `15` with `7` | TODO | TODO | TODO | TODO |
 
 Record the final sorted array returned by `heap_sort`.
 
@@ -287,11 +287,11 @@ traversal of the tree after insertion. The first two rows are worked.
 |---|---|---|---|
 | 40 | None (Root) | Root | `[40]` |
 | 20 | 40 | Left | `[20, 40]` |
-| 60 | TODO | TODO | TODO |
-| 10 | TODO | TODO | TODO |
-| 30 | TODO | TODO | TODO |
-| 50 | TODO | TODO | TODO |
-| 70 | TODO | TODO | TODO |
+| 60 | 40 | Right | `[20, 40, 60]` |
+| 10 | 20 | Left | `[10, 20, 40, 60]`  |
+| 30 | 20 | Right | `[10, 20, 30, 40, 60]` |
+| 50 | 60 | Left | `[10, 20, 30, 40, 50, 60]` |
+| 70 | 60 | Right | `[10, 20, 30, 40, 50, 60, 70]` |
 
 ### 2.2 Trace: Deletion
 

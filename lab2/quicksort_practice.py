@@ -9,8 +9,19 @@ def lomuto_partition(arr, low, high):
   values to its right must be > pivot. Preserve values outside the range.
   """
   # TODO 2.2: Translate the README's Lomuto pseudocode.
-  raise NotImplementedError("Complete lomuto_partition")
+  pivot = arr[high]
+  i = low - 1
+  for j in range(low, high):
+    if arr[j] <= pivot:
+      i = i + 1
+      temp = arr[i]
+      arr[i] = arr[j]
+      arr[j] = temp
 
+  temp = arr[i + 1]
+  arr[i + 1] = arr[high]
+  arr[high] = temp
+  return i + 1
 
 def quick_sort(arr, low=0, high=None):
   """Provided: sort in place and return arr. Intended for small lab inputs."""

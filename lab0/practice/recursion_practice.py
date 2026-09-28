@@ -7,8 +7,11 @@ def factorial(n):
         raise ValueError("factorial is not defined for negative integers")
 
     # TODO: Add the base case. Remember that 0! is 1.
+    if n == 0:
+        return 1
 
     # TODO: Return n multiplied by factorial(n - 1).
+    return n * factorial(n-1)
     raise NotImplementedError("Complete factorial")
 
 

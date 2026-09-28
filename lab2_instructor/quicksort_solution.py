@@ -30,5 +30,5 @@ def quick_sort(arr, low=0, high=None):
 
 
 if __name__ == "__main__":
-  from lab2_instructor.lab_checks import check_quicksort
+  from lab_checks import check_quicksort
   raise SystemExit(check_quicksort(lomuto_partition, quick_sort))

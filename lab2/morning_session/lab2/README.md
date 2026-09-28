@@ -78,15 +78,15 @@ not just their indices. The array state is the state after that comparison.
 
 | Pass | `j` | Values compared | Swap or keep? | Array afterward |
 |---|---|---|---|---|
-| 2 | 0 | TODO | TODO | TODO |
-| 2 | 1 | TODO | TODO | TODO |
-| 2 | 2 | TODO | TODO | TODO |
-| 2 | 3 | TODO | TODO | TODO |
-| 3 | 0 | TODO | TODO | TODO |
-| 3 | 1 | TODO | TODO | TODO |
-| 3 | 2 | TODO | TODO | TODO |
-| 4 | 0 | TODO | TODO | TODO |
-| 4 | 1 | TODO | TODO | TODO |
+| 2 | 0 | `2 < 5` | Keep | `[2, 5, 1, 5, 6, 9]` |
+| 2 | 1 | `5 > 1` | Swap | `[2, 1, 5, 5, 6, 9]` |
+| 2 | 2 | `5 = 5` | Keep | `[2, 1, 5, 5, 6, 9]` |
+| 2 | 3 | `5 < 6` | Keep | `[2, 1, 5, 5, 6, 9]` |
+| 3 | 0 | `2 > 1` | Swap | `[1, 2, 5, 5, 6, 9]` |
+| 3 | 1 | `2 < 5` | Keep | `[1, 2, 5, 5, 6, 9]` |
+| 3 | 2 | `5 > 1` | TODO | TODO |
+| 4 | 0 | `5 > 1` | TODO | TODO |
+| 4 | 1 | `5 > 1` | TODO | TODO |
 
 Record the sorted suffix guaranteed after each pass, the total comparisons,
 and the total swaps. Why does the algorithm stop after Pass 4 even though the
@@ -181,15 +181,19 @@ A swap with the same index is allowed and leaves the array unchanged.
 |---|---|---|---|---|---|
 | Initial | N/A | N/A | None | -1 | `[2, 8, 7, 1, 3, 5, 6, 4]` |
 | 0 | 2 | Yes | 0 and 0 | 0 | `[2, 8, 7, 1, 3, 5, 6, 4]` |
-| 1 | TODO | TODO | TODO | TODO | TODO |
-| 2 | TODO | TODO | TODO | TODO | TODO |
-| 3 | TODO | TODO | TODO | TODO | TODO |
-| 4 | TODO | TODO | TODO | TODO | TODO |
-| 5 | TODO | TODO | TODO | TODO | TODO |
-| 6 | TODO | TODO | TODO | TODO | TODO |
-| Final pivot swap | N/A | N/A | TODO | N/A | TODO |
+| 1 | 8 | No | none | 0 | `[2, 8, 7, 1, 3, 5, 6, 4]` |
+| 2 | 7 | No | none | 0 | `[2, 8, 7, 1, 3, 5, 6, 4]` |
+| 3 | 1 | Yes | 1 and 3 | 1 | `[2, 1, 7, 8, 3, 5, 6, 4]` |
+| 4 | 3 | Yes | 4 and 2 | 2 | `[2, 1, 3, 8, 7, 5, 6, 4]` |
+| 5 | 5 | No | none | 2 | `[2, 1, 3, 8, 7, 5, 6, 4]` |
+| 6 | 6 | No | none | 2 | `[2, 1, 3, 8, 7, 5, 6, 4]` |
+| Final pivot swap | N/A | N/A | 3 and 7 | N/A | `[2, 1, 3, 4, 7, 5, 6, 8]` |
 
 Record the returned pivot index and the left and right subarrays.
+returned pivot index: 3
+pivot: `[4]`
+left: `[2, 1, 3]`
+right: `[7, 5, 6, 8]`
 
 ### 2.2 Implement partitioning
 

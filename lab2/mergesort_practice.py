@@ -8,6 +8,16 @@ def merge(left, right):
   Use indices; do not remove items from the input lists.
   """
   # TODO 3.2: Compare current elements, then copy any remaining elements.
+  create an empty result list
+  i = 0, j = 0
+  while i < length(left) and j < length(right)
+    if left[i] <= right[j]
+      append left[i] to result; increment i
+    otherwise
+      append right[j] to result; increment j
+  append all remaining elements of left, starting at i
+  append all remaining elements of right, starting at j
+  return result
   raise NotImplementedError("Complete merge")
 
 

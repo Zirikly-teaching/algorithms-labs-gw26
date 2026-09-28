@@ -64,7 +64,25 @@ def bst_insert(tree, key):
   Postconditions: tree satisfies BST search invariant; new node has correct parent.
   """
   # TODO 2.3A: Traverse downward to find parent slot, attach Node(key, parent=...), and update tree.root if empty.
-  raise NotImplementedError("Complete bst_insert")
+  z = Node(key)
+  parent = None
+  current = tree.root
+  while current != None:
+    parent = current
+    if key < current.key:
+      current = current.left
+    elif key > current.key:
+      current = current.right
+    else:
+      return current
+  z.parent = parent
+  if parent == None:
+    tree.root = z
+  elif key < parent.key:
+    parent.left = z
+  else:
+    parent.right = z
+  return z
 
 
 def bst_delete(tree, key):
@@ -74,7 +92,23 @@ def bst_delete(tree, key):
   Preserves BST search invariant and all parent pointers.
   """
   # TODO 2.3B: Find target node z; handle 0-child, 1-child, and 2-child cases using transplant and successor.
-  raise NotImplementedError("Complete bst_delete")
+  z = bst_insert(tree.root, key)
+  if z == None:
+    return None
+  if z.left == None:
+    transplant(tree, z, z.right)
+  elif z.right == None:
+    transplant(tree, z, z.left)
+  else:
+    y = tree_minimum(z.right)
+    if y.parent != z:
+      transplant(tree, y, y.right)
+      y.right = z.right
+      y.right.parent = y
+    transplant(tree, z, y)
+    y.left = z.left
+    y.left.parent = y
+  return z
 
 
 if __name__ == "__main__":
