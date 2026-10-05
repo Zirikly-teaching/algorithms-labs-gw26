@@ -99,7 +99,9 @@ rotated subtree may have a different height, creating imbalances higher up.
 
 **TODO 1.1:** Briefly recall the three deletion cases from Lab 3/4:
 
-- What happens when the target node has 0 children? removes the node
+- What happens when the target node has 0 children?
+
+removes the node
 
 - What happens when the target node has 1 child?
 
@@ -116,7 +118,9 @@ being less than the parent and every right child being greater than the parent
 
 **TODO 1.2:** When you delete a leaf node from an AVL tree:
 
-- Does the leaf's parent's height change? By how much? yes by 1
+- Does the leaf's parent's height change? By how much?
+
+yes by 1
 
 - Can the grandparent's height change?
 
@@ -159,11 +163,11 @@ Start with this AVL tree:
 5. After rotation, is the tree still imbalanced? If so, continue rebalancing.
 6. Draw the final tree and record the in-order traversal.
 
-| Step | Action            | Tree state           | Unbalanced node | BF   | Signature | Rotation | Notes                                        |
-| ---- | ----------------- | -------------------- | --------------- | ---- | --------- | -------- | -------------------------------------------- |
-| 1    | Delete 40         | 40 is removed (leaf) | -               | -    | -         | -        | Tree now has 30 root, 20 left, nothing right |
-| 2    | Rebalance from 30 | TODO                 | TODO            | TODO | TODO      | TODO     | TODO                                         |
-| 3    | After rotation    | TODO                 | TODO            | TODO | -         | -        | Final state                                  |
+| Step | Action            | Tree state           | Unbalanced node | BF   | Signature  | Rotation | Notes                                        |
+| ---- | ----------------- | -------------------- | --------------- | ---- | ---------- | -------- | -------------------------------------------- |
+| 1    | Delete 40         | 40 is removed (leaf) | 30              | +2   | left-heavy | LL       | Tree now has 30 root, 20 left, nothing right |
+| 2    | Rebalance from 30 | 30 is right leaf     | None            | 0    | N/A        | N/A      | Tree now has 20 root, 10 left, 30 right      |
+| 3    | After rotation    | done                 | done            | done | -          | -        | Final state                                  |
 
 ### 2.2 Trace: Double rotation after deletion
 
@@ -188,10 +192,10 @@ Start with this AVL tree:
 5. Which rotation(s) are needed (single or double)?
 6. Draw the final tree and record the in-order traversal.
 
-| Step | Action       | Current node | BF before | Signature | Rotation applied | BF after |
-| ---- | ------------ | ------------ | --------- | --------- | ---------------- | -------- |
-| 1    | Delete 40    | 30           | TODO      | TODO      | TODO             | TODO     |
-| 2    | Verify final | -            | -         | -         | -                | -        |
+| Step | Action       | Current node | BF before | Signature  | Rotation applied | BF after |
+| ---- | ------------ | ------------ | --------- | ---------- | ---------------- | -------- |
+| 1    | Delete 40    | 30           | +2        | left-heavy | LR               | 0        |
+| 2    | Verify final | -            | -         | -          | -                | -        |
 
 ### 2.3 Trace: Two-child deletion with rebalancing
 
@@ -219,10 +223,10 @@ children). Trace the rebalancing:
 4. At each step, identify any violation and apply the necessary rotation.
 5. Continue until no more imbalances exist.
 
-| Step | Current node                 | BF   | Imbalanced? | Violation | Rotation applied |
-| ---- | ---------------------------- | ---- | ----------- | --------- | ---------------- |
-| 1    | (after replacing 30 with 40) | TODO | TODO        | TODO      | TODO             |
-| 2    | (if needed, continue up)     | TODO | TODO        | TODO      | TODO             |
+| Step | Current node                 | BF  | Imbalanced? | Violation  | Rotation applied |
+| ---- | ---------------------------- | --- | ----------- | ---------- | ---------------- |
+| 1    | (after replacing 30 with 40) | +2  | yes         | left-heavy | LL               |
+| 2    | (if needed, continue up)     | 0   | no          | None       | N/A              |
 
 ---
 
