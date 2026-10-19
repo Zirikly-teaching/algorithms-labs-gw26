@@ -60,8 +60,13 @@ def linear_probe_lookup(table, key):
   - If table.slots[slot][0] == key: return (table.slots[slot][1], probes).
   - If all slots are checked without a match, return (None, table.capacity).
   """
-  # TODO 3.2B: Trace the linear probe path and stop on key match or empty slot (None).
-  raise NotImplementedError("Complete linear_probe_lookup")
+  for i in range(table.capacity):
+    slot = probe_index(key, i, table.capacity)
+    if table.slots[slot] is None:
+      return (None, i + 1)
+    elif table.slots[slot][0] == key:
+      return (table.slots[slot][1], i + 1)
+  return (None, table.capacity)
 
 
 if __name__ == "__main__":
