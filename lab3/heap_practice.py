@@ -9,7 +9,20 @@ def max_heapify_down(arr, i, heap_size):
   Indices heap_size onward are outside the active heap and must not change.
   """
   # TODO 1.3A: Follow the max-heap sift-down pseudocode. Check bounds before indexing.
-  raise NotImplementedError("Complete max_heapify_down")
+  while True:
+    left = 2 * i + 1
+    right = 2 * i + 2
+    largest = i
+    if left < heap_size and arr[left] > arr[largest]:
+      largest = left
+    if right < heap_size and arr[right] > arr[largest]:
+      largest = right
+    if largest != i:
+      arr[i], arr[largest] = arr[largest], arr[i]
+      i = largest
+    else:
+      break
+  return None
 
 
 def build_max_heap(arr):
@@ -23,7 +36,8 @@ def heap_sort(arr):
   build_max_heap(arr)
   for end in range(len(arr) - 1, 0, -1):
     # TODO 1.3B: Swap root with end, then repair the reduced active heap of size end.
-    raise NotImplementedError("Complete the heap_sort loop")
+    arr[0], arr[end] = arr[end], arr[0]
+    max_heapify_down(arr, 0, end)
   return arr
 
 
