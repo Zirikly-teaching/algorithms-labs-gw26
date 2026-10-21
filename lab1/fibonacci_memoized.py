@@ -1,11 +1,17 @@
 def fibonacci(n):
-    if n <= 0:
-        return 0
-    if n == 1:
-        return 1
-    if n not in cache:
-        cache[n] = fibonacci(n-1) + fibonacci(n-2)
-    return cache[n]
+    global call_count
+    call_count += 1
+    if n <= 1:
+        return n
+
+    prev2 = 0
+    prev1 = 1
+
+    for i in range(2, n + 1):
+        current = prev1 + prev2
+        prev2 = prev1
+        prev1 = current
+    return prev1
 
 def is_positive_integer(text):
     try:
@@ -21,7 +27,8 @@ if __name__ == "__main__":
         text = input("Please enter a positive integer: ")
         if not is_positive_integer(text):
             continue
+        call_count = 0
         start = time.perf_counter()
         result = fibonacci(int(text))
         end = time.perf_counter()
-        print(f"fibonacci({int(text)}) = {result}, calculating this took {end - start:.4e} seconds.")
+        print(f"fibonacci({int(text)}) = {result}, calculating this took {end - start:.4e} seconds.\nThe function \"fibonacci\" was called {call_count} times.")

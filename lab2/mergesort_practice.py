@@ -8,7 +8,21 @@ def merge(left, right):
   Use indices; do not remove items from the input lists.
   """
   # TODO 3.2: Compare current elements, then copy any remaining elements.
-  raise NotImplementedError("Complete merge")
+  result = []
+  l = 0
+  r = 0
+
+  while l < len(left) and r < len(right):
+    if left[l] <= right[r]:
+      result.append(left[l])
+      l += 1
+    else:
+      result.append(right[r])
+      r += 1
+
+  result.extend(left[l:])
+  result.extend(right[r:])
+  return result
 
 
 def merge_sort(arr):
