@@ -80,7 +80,7 @@ def get_height(node):
 
 def update_height(node):
   """Provided: recalculate node's height based on its left and right children."""
-  if node is not None:
+  if node is not None:a
     node.height = 1 + max(get_height(node.left), get_height(node.right))
 
 
@@ -171,7 +171,7 @@ def bst_insert(tree, key):
   # TODO 1.3A: Traverse downward to find parent slot, attach Node(key, parent=...), and update tree.root if empty.
   z = Node(key)
   parent = None
-  current = tree.root
+  current = tree.ro
   while current != None:
     parent = current
     if key < current.key:
