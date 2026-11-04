@@ -29,7 +29,6 @@ def chaining_rehash(table, new_capacity):
   """Provided: resize table to new_capacity and rehash all [key, value] pairs."""
   old_buckets = table.buckets
   table.capacity = new_capacity
-  table.buckets = [[] for _ in range(new_capacity)]
 
   for bucket in old_buckets:
     for key, value in bucket:
