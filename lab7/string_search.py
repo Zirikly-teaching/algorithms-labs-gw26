@@ -11,8 +11,12 @@ def naive_search(text, pattern):
         return []
     matches = []
 
-    # TODO 1.2: compare characters at each shift and collect complete matches
-    raise NotImplementedError("Complete naive_search")
+    for shift in range(n - m + 1):
+        j = 0
+        while j < m and text[shift + j] == pattern[j]:
+            j += 1
+        if j == m:
+            matches.append(shift)
 
     return matches
 
@@ -31,8 +35,19 @@ def rabin_karp(text, pattern, d=256, q=101):
     p = 0
     t = 0
 
-    # TODO 2.2: build the initial hashes, verify hits, and roll to each next window
-    raise NotImplementedError("Complete rabin_karp")
+    for i in range(m):
+        p = (d * p + ord(pattern[i])) % q
+        t = (d * t + ord(text[i])) % q
+
+    for shift in range(n - m + 1):
+        if p == t:
+            j = 0
+            while j < m and text[shift + j] == pattern[j]:
+                j += 1
+            if j == m:
+                matches.append(shift)
+        if shift < n - m:
+            t = (d * (t - ord(text[shift]) * h) + ord(text[shift + m])) % q
 
     return matches
 
@@ -46,8 +61,12 @@ def compute_prefix_function(pattern):
     pi = [0] * m
     k = 0
 
-    # TODO 3.2A: extend each border, following prefix links on a mismatch
-    raise NotImplementedError("Complete compute_prefix_function")
+    for i in range(1, m):
+        while k > 0 and pattern[k] != pattern[i]:
+            k = pi[k - 1]
+        if pattern[k] == pattern[i]:
+            k += 1
+        pi[i] = k
 
     return pi
 
@@ -64,8 +83,14 @@ def kmp_search(text, pattern):
     pi = compute_prefix_function(pattern)
     q = 0
 
-    # TODO 3.2B: scan the text with prefix fallbacks and record all matches
-    raise NotImplementedError("Complete kmp_search")
+    for i in range(n):
+        while q > 0 and pattern[q] != text[i]:
+            q = pi[q - 1]
+        if pattern[q] == text[i]:
+            q += 1
+        if q == m:
+            matches.append(i - m + 1)
+            q = pi[q - 1]
 
     return matches
 

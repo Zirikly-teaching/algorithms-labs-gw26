@@ -25,12 +25,12 @@ pseudocode, and practice traces. The current sections cover:
 | File | Your work |
 |---|---|
 | `README.md` | Complete the traces and complexity questions |
-| `string_search.py` | Fill in the four implementation TODOs |
+| `string_search.py` | Implement the four search and prefix-table functions |
 | `lab_checks.py` | Provided automated checks; do not edit |
 
-- [ ] Part 1: Trace and implement naive search.
-- [ ] Part 2: Trace, implement, and analyze Rabin–Karp.
-- [ ] Part 3: Trace the prefix table and matcher, implement KMP, and analyze its running time.
+- [x] Part 1: Trace and implement naive search.
+- [x] Part 2: Trace, implement, and analyze Rabin–Karp.
+- [x] Part 3: Trace the prefix table and matcher, implement KMP, and analyze its running time.
 
 ### Shared conventions
 
@@ -77,21 +77,21 @@ NAIVE-SEARCH(T, P)
 
 ### 1.1 Trace: Where does each attempt stop?
 
-**TODO 1.1:** For the same text and pattern, trace the shifts below.
+For the same text and pattern, trace the shifts below.
 List the text indices checked, in order, including the one where a mismatch
 occurs. Record where $j$ stops and whether you add $s$ to the results.
 
 | Shift `s` | Text indices checked | Final `j` | Append `s`? |
 |---|---|---|---|
 | 1 | `1` | 0 | No |
-| 2 | TODO | TODO | TODO |
-| 4 | TODO | TODO | TODO |
-| 5 | TODO | TODO | TODO |
+| 2 | `2, 3` | 1 | No |
+| 4 | `4, 5` | 1 | No |
+| 5 | `5, 6, 7` | 3 | Yes |
 
 ### 1.2 Implementation
 
-**TODO 1.2:** Complete `naive_search` in the provided `string_search.py` using
-the pseudocode. Return the list of all matching shifts, including overlaps.
+The `naive_search` implementation in `string_search.py` follows the pseudocode
+and returns the list of all matching shifts, including overlaps.
 
 ---
 
@@ -169,20 +169,19 @@ characters in the text and pattern.
 Use $d=10$ and $q=13$. Here $m=5$, $p=7$, and $h=3$.
 At shift `6`, the hash is `7`; all five characters match, so record `6`.
 
-**TODO 2.1:** Trace these two steps:
+**Trace:**
 
-1. **Move from shift `6` to `7`.** Which digit leaves the window, and which
-   digit enters? Substitute them into the rolling-hash formula and calculate
-   the new hash.
-2. **Check shift `12`.** Its hash is `7`, so compare the characters. List the
-   text and pattern indices checked before stopping. Is this a match or a
-   spurious hit?
+1. **Move from shift `6` to `7`.** The digit `'3'` at `T[6]` leaves and `'2'`
+   at `T[11]` enters. The new hash is
+   `(7 - 3 * 3) * 10 + 2 = -18`, and `-18 mod 13 = 8`.
+2. **Check shift `12`.** `T[12] = '6'` differs from `P[0] = '3'`, so only
+   text index `12` and pattern index `0` are checked. This is a spurious hit,
+   not a match.
 
 ### 2.2 Implementation
 
-**TODO 2.2:** Complete `rabin_karp` in the provided `string_search.py` using
-the pseudocode. Write the character-by-character check inside the function.
-The length check and initial variables are provided.
+The `rabin_karp` implementation in `string_search.py` follows the pseudocode,
+including the character-by-character check after each hash hit.
 
 Use **ASCII strings**, `ord(character)` for codes, and the provided defaults
 `d=256`, `q=101`. The hand trace uses decimal digit codes to keep arithmetic
@@ -191,9 +190,7 @@ manageable. Python's `% q` gives a nonnegative remainder for positive `q`;
 
 ### 2.3 Best- and worst-case time complexity
 
-**TODO 2.3:** Find the best- and worst-case running times, including the time
-spent building the first hashes. Assume $1 \le m \le n$ and that each hash
-operation takes constant time.
+Assume $1 ≤ m ≤ n$ and that each hash operation takes constant time.
 
 - **Best case:** Every window hash differs from the pattern hash.
 - **Worst case:** The text is $n$ copies of `a`, and the pattern is $m$ copies of `a`.
@@ -203,11 +200,12 @@ hash comparisons and character checks.
 
 | Case | Build hashes | Search | Total |
 |---|---|---|---|
-| Best | TODO | TODO | TODO |
-| Worst | TODO | TODO | TODO |
+| Best | Theta(m) | Theta(n-m+1) | Theta(n) |
+| Worst | Theta(m) | Theta(m(n-m+1)) | Theta(m(n-m+1)+m) |
 
-For each case, explain in one sentence how many windows need character checks
-and how many characters are checked in each one.
+In the best case, no windows need character checks, and the algorithm hashes
+all n-m+1 windows. In the worst case, all n-m+1 windows have matching
+hashes, and all m characters are checked in each window.
 
 ### Connection: Searching for several patterns
 
@@ -294,33 +292,33 @@ KMP-SEARCH(T, P)
 Use the lecture's `P = "ababaca"` and `T = "abababacaba"`.
 The first five prefix entries are `[0, 0, 1, 2, 3]`.
 
-**TODO 3.1:** Finish the prefix-table steps below. If `k` falls back, show
-its starting value and each value it reaches. Write “none” if no fallback occurs.
+Finish the prefix-table steps below. If `k` falls back, show its starting
+value and each value it reaches. Write “none” if no fallback occurs.
 The first row is worked: `P[2] == P[4]`, so `k` increases to `3`.
 
 | Index `j` | Starting `k` | Fallbacks | `pi[j]` |
 |---|---|---|---|
 | 4 | 2 | none | 3 |
-| 5 | 3 | TODO | TODO |
-| 6 | 0 | TODO | TODO |
+| 5 | 3 | `1, 0` | 0 |
+| 6 | 0 | none | 1 |
 
-Now trace the matcher at `i = 8`, starting with `q = 6`. Which pattern index
-is compared with `T[8]`? What shift is recorded, and what is `q` afterward?
+At `i = 8`, starting with `q = 6`, the matcher compares `P[6]` with `T[8]`.
+They match, so it records shift `2`; after the complete match, `q` becomes
+`pi[6] = 1`.
 
 ### 3.2 Implementation
 
-In the provided `string_search.py`:
+The implementation in `string_search.py`:
 
-- **TODO 3.2A:** Complete `compute_prefix_function(pattern)` and return `pi`.
-- **TODO 3.2B:** Complete `kmp_search(text, pattern)` using that helper.
+- `compute_prefix_function(pattern)` builds and returns `pi`.
+- `kmp_search(text, pattern)` uses that helper to search the text.
 
 Follow the pseudocode's fallback rules both on a mismatch and after a full
 match. The provided checks cover repeated fallbacks and overlapping matches.
 
 ### 3.3 Best- and worst-case time complexity
 
-**TODO 3.3:** Find the best- and worst-case running times, including the time
-to build `pi`. Assume $1 \le m \le n$ and that the search returns all matches.
+Assume 1 ≤ m ≤ n and that the search returns all matches.
 
 - **Best case:** The text contains only `a`, and the pattern contains only `b`.
 - **Worst case:** Long partial matches keep ending in mismatches. For example,
@@ -330,12 +328,17 @@ Give tight bounds in terms of $n$ and $m$.
 
 | Case | Build `pi` | Search | Total |
 |---|---|---|---|
-| Best | TODO | TODO | TODO |
-| Worst | TODO | TODO | TODO |
+| Best | Theta(m) | Theta(n) | Theta(n+m) |
+| Worst | Theta(m) | Theta(n) | Theta(n+m) |
 
-Explain the worst-case bound in a few lines. Across the whole scan, how often
-can `q` increase? How does that limit the number of fallbacks? Use the same
-reasoning for `k` when building `pi`.
+In the text scan, `q` increases at most once per text character, so it
+increases at most n times. Each fallback strictly decreases `q`, meaning
+the total number of fallback steps cannot exceed the total amount by which it
+has increased; thus there are O(n) fallback steps. While building `pi`,
+`k` increases at most once per pattern character and every fallback decreases
+it, so there are O(m) fallback steps. Both search and prefix-table
+construction are therefore linear; since m ≤ n, the total is
+Theta(n+m)=Theta(n).
 
 ---
 
