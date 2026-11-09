@@ -89,11 +89,13 @@ order, are `[0, 1, 1, 2, 1]`. Visit neighbors in the order shown.
 | Vertex removed | Queue afterward | In-degree of `D` |
 |---|---|---|
 | A | `[B, C]` | 2 |
-| B | TODO | TODO |
-| C | TODO | TODO |
+| B | `[C]` | 1 |
+| C | `[D]` | 0 |
 
 Now add the edge `E -> B`. Which vertices reach the output before the
 algorithm stops? What does the function return?
+- all the vertices reach the output, it returns 
+`[A, B, C, D, E]`
 
 ### 1.2 Implementation
 
@@ -131,6 +133,8 @@ processed before that vertex, so one pass over the edges is enough.
 **TODO 1.3:** Give the time and extra-space bounds for Kahn's algorithm in
 terms of `V` vertices and `E` edges, excluding storage for the input graph.
 Briefly explain how often each vertex enters the queue and each edge is checked.
+- O(V + E) time complexity and O(V) auxiliary space complexity
+- each vertex enters queue once when its in degree drops to 0, each edge is checked once whn its source vertex is dropped
 
 ---
 
