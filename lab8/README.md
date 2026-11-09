@@ -257,6 +257,7 @@ a vertex's neighbors requires scanning its entire row.
 In a few sentences, explain how many neighbor entries each traversal checks
 with each representation. Why does a sparse graph benefit from adjacency lists?
 
+In an adjacency list, only the neighbors that actually have a connection to the original node will be checked (O(deg(u)), while in an adjacency matrix, every possible node will be checked if there is a connection to look for all neighbors (O(V)). If the graph is sparse with one or two connections at each node, then adjacency lists are able to compute this neighbor traversal check in O(1) time rather than iterating through a long linked list of neighbors.
 ---
 
 ## Final check
