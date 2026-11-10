@@ -19,9 +19,24 @@ def topological_sort(graph):
     queue = deque()
     order = []
 
-    # TODO 1.2: count incoming edges, process ready vertices, and check for a cycle
-    raise NotImplementedError("Complete topological_sort")
+    for u in range(n):
+        for v in graph[u]:
+            indegree[v] += 1
 
+    for v in range(n):
+        if indegree[v] == 0:
+            queue.append(v)
+
+    while queue:
+        u = queue.popleft()
+        order.append(u)
+        for v in graph[u]:
+            indegree[v] -= 1
+            if indegree[v] == 0:
+                queue.append(v)
+
+    if len(order) != n:
+        return None
     return order
 
 
@@ -34,16 +49,30 @@ class DisjointSet:
 
     def find(self, x):
         """Return x's root and compress the path to it."""
-        # TODO 2.1A: update each parent on the search path to the root
-        raise NotImplementedError("Complete find")
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
     def union(self, x, y):
         """Merge different components and return True, or return False if joined.
 
         On equal ranks, attach root_y under root_x and increment rank[root_x].
         """
-        # TODO 2.1B: find the roots and merge by rank
-        raise NotImplementedError("Complete union")
+        root_x = self.find(x)
+        root_y = self.find(y)
+
+        if root_x == root_y:
+            return False
+
+        if self.rank[root_x] < self.rank[root_y]:
+            self.parent[root_x] = root_y
+        elif self.rank[root_x] > self.rank[root_y]:
+            self.parent[root_y] = root_x
+        else:
+            self.parent[root_y] = root_x
+            self.rank[root_x] += 1
+
+        return True
 
 
 def kruskal(n, edges):
@@ -58,8 +87,12 @@ def kruskal(n, edges):
     chosen = []
     total = 0
 
-    # TODO 2.1C: use union to accept edges and stop once a spanning tree is complete
-    raise NotImplementedError("Complete kruskal")
+    for u, v, weight in sorted_edges:
+        if sets.union(u, v):
+            chosen.append((u, v, weight))
+            total += weight
+            if len(chosen) == n - 1:
+                break
 
     return chosen, total
 
