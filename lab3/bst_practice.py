@@ -64,7 +64,25 @@ def bst_insert(tree, key):
   Postconditions: tree satisfies BST search invariant; new node has correct parent.
   """
   # TODO 2.3A: Traverse downward to find parent slot, attach Node(key, parent=...), and update tree.root if empty.
-  raise NotImplementedError("Complete bst_insert")
+  new_node = Node(key)
+  parent = None
+  current = tree.root
+  while current is not None:
+    parent = current
+    if key < current.key:
+      current = current.left
+    elif key > current.key:
+      current = current.right
+    else:
+      return current
+  new_node.parent = parent
+  if parent is None:
+    tree.root = new_node
+  elif key < parent.key:
+    parent.left = new_node
+  else:
+    parent.right = new_node
+  return new_node
 
 
 def bst_delete(tree, key):
@@ -74,7 +92,26 @@ def bst_delete(tree, key):
   Preserves BST search invariant and all parent pointers.
   """
   # TODO 2.3B: Find target node z; handle 0-child, 1-child, and 2-child cases using transplant and successor.
-  raise NotImplementedError("Complete bst_delete")
+  deleted_node = bst_search(tree.root, key)
+  if deleted_node is None:
+    return None
+
+  if deleted_node.left is None:
+    transplant(tree, deleted_node, deleted_node.right)
+  elif deleted_node.right is None:
+    transplant(tree, deleted_node, deleted_node.left)
+  else:
+    min_node = tree_minimum(deleted_node.right)
+    if min_node.parent != deleted_node:
+      transplant(tree, min_node, min_node.right)
+      min_node.right = deleted_node.right
+      min_node.right.parent = min_node
+
+    transplant(tree, deleted_node, min_node)
+    min_node.left = deleted_node.left
+    min_node.left.parent = min_node
+
+  return deleted_node
 
 
 if __name__ == "__main__":

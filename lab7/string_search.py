@@ -12,7 +12,12 @@ def naive_search(text, pattern):
     matches = []
 
     # TODO 1.2: compare characters at each shift and collect complete matches
-    raise NotImplementedError("Complete naive_search")
+    for s in range(0, n - m):
+        j = 0
+        while j < m and text[s + j] == pattern[j]:
+            j += 1
+        if j == m:
+            matches.append(s)
 
     return matches
 
@@ -31,8 +36,22 @@ def rabin_karp(text, pattern, d=256, q=101):
     p = 0
     t = 0
 
-    # TODO 2.2: build the initial hashes, verify hits, and roll to each next window
-    raise NotImplementedError("Complete rabin_karp")
+    def is_match(shift):
+        for i in range(0, m):
+            if text[shift + i] != pattern[i]:
+                return False
+
+        return True
+
+    for j in range(0, m):
+        p = (d * p + ord(pattern[j])) % q
+        t = (d * t + ord(text[j])) % q
+
+    for s in range(0, n - m + 1):
+        if p == t and is_match(text, pattern, s):
+            matches.append(s)
+        if s < n - m:
+            t = (d * (t - ord(text[s]) * h) + ord(text[s + m])) % q
 
     return matches
 
@@ -47,7 +66,12 @@ def compute_prefix_function(pattern):
     k = 0
 
     # TODO 3.2A: extend each border, following prefix links on a mismatch
-    raise NotImplementedError("Complete compute_prefix_function")
+    for j in range(1, m):
+        while k > 0 and pattern[k] != pattern[j]:
+            k = pi[k - 1]
+        if pattern[k] == pattern[j]:
+            k += 1
+        pi[j] = k
 
     return pi
 
@@ -65,7 +89,14 @@ def kmp_search(text, pattern):
     q = 0
 
     # TODO 3.2B: scan the text with prefix fallbacks and record all matches
-    raise NotImplementedError("Complete kmp_search")
+    for i in range(0, n):
+        while q > 0 and pattern[q] != text[i]:
+            q = pi[q - 1]
+        if pattern[q] == text[i]:
+            q += 1
+        if q == m:
+            matches.append(i - m + 1)
+            q = pi[m - 1]
 
     return matches
 
@@ -73,6 +104,8 @@ def kmp_search(text, pattern):
 if __name__ == "__main__":
     from lab_checks import check_string_search
 
-    raise SystemExit(check_string_search(
-        naive_search, rabin_karp, compute_prefix_function, kmp_search
-    ))
+    raise SystemExit(
+        check_string_search(
+            naive_search, rabin_karp, compute_prefix_function, kmp_search
+        )
+    )
