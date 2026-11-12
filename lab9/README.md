@@ -84,16 +84,23 @@ TOPOLOGICAL-SORT(graph)
 Use the lecture graph above. Its initial in-degrees, in `A` through `E`
 order, are `[0, 1, 1, 2, 1]`. Visit neighbors in the order shown.
 
-**TODO 1.1:** Complete these steps. The queue's front is on the left.
+The queue's front is on the left.
 
 | Vertex removed | Queue afterward | In-degree of `D` |
 |---|---|---|
 | A | `[B, C]` | 2 |
-| B | TODO | TODO |
-| C | TODO | TODO |
+| B | `[C]` | 1 |
+| C | `[D]` | 0 |
 
-Now add the edge `E -> B`. Which vertices reach the output before the
-algorithm stops? What does the function return?
+When `B` is removed, its only outgoing edge is to `D`, so `D` drops from 2 to 1.
+When `C` is removed, `D` drops from 1 to 0 and is enqueued. The algorithm then
+continues with `D`, then `E`, producing one valid topological order: `[A, B, C, D, E]`.
+
+Now add the edge `E -> B`. The new in-degrees are `[0, 2, 1, 2, 1]`.
+Only `A` starts in the queue. After `A` is removed, `C` becomes ready, so the
+queue is `[C]`. Then `C` is removed, reducing `D` to 1, but `B` never reaches
+zero because the cycle `E -> B -> D -> E` keeps it blocked. The queue empties
+before all vertices are output, so the algorithm stops and returns `None`.
 
 ### 1.2 Implementation
 
@@ -128,9 +135,17 @@ processed before that vertex, so one pass over the edges is enough.
 
 ### 1.3 Analysis
 
-**TODO 1.3:** Give the time and extra-space bounds for Kahn's algorithm in
-terms of `V` vertices and `E` edges, excluding storage for the input graph.
-Briefly explain how often each vertex enters the queue and each edge is checked.
+Kahn's algorithm runs in `Theta(V + E)` time and uses `Theta(V)` extra space,
+excluding the input graph itself.
+
+- The initial indegree pass checks every edge once, so it costs `Theta(E)`.
+- Each vertex is enqueued at most once when its indegree becomes zero.
+- Each time a vertex is removed, we scan its adjacency list, so every directed edge
+  is examined once in the processing step.
+- The queue and indegree arrays store at most `V` entries, so the auxiliary space is `Theta(V)`.
+
+The algorithm is linear because each vertex enters the queue once and each edge is
+checked at most once during the main loop.
 
 ---
 
@@ -243,24 +258,35 @@ parent = [A, A, A, C, E]
 rank   = [2, 0, 1, 0, 0]
 ```
 
-**TODO 2.2:** Continue from this state. Record roots after the two `find`
-calls, then decide whether the edge is accepted.
+Continuing from this state:
 
 | Edge | Roots | Accept? | Total weight |
 |---|---|---|---|
-| `(B, D): 4` | TODO | TODO | TODO |
-| `(A, C): 5` | TODO | TODO | TODO |
-| `(D, E): 6` | TODO | TODO | TODO |
+| `(B, D): 4` | `find(B)=A`, `find(D)=A` | No | 6 |
+| `(A, C): 5` | `find(A)=A`, `find(C)=A` | No | 6 |
+| `(D, E): 6` | `find(D)=A`, `find(E)=E` | Yes | 12 |
 
-After checking `(B, D)`, what is `parent[D]`? Explain why a rejected edge
-can still change the parent array. Does Kruskal examine `(C, E): 7`?
+After checking `(B, D)`, `parent[D]` becomes `A` because `find(D)` path-compresses the
+search path to the root. A rejected edge can still change the parent array because the
+`find` operation compresses all intermediate pointers even when the union is refused.
+
+Kruskal does not examine `(C, E): 7` in this run: after accepting `(D, E)`, the
+algorithm has already chosen `n - 1 = 4` edges, so it stops as soon as the spanning
+forest reaches the required size.
 
 ### 2.3 Analysis
 
-**TODO 2.3:** For a connected graph, give Kruskal's total time bound,
-including initialization and sorting. You may use the lecture's amortized
-bound of `O(α(V))` per union-find operation, where `α` grows extremely slowly.
-Which step dominates? What changes if the edges are already sorted?
+For a connected graph with `V` vertices and `E` edges, Kruskal's total time is
+`O(E log E + E α(V) + V)`, which is usually written as `O(E log E)`.
+
+- Sorting the edge list dominates: `O(E log E)`.
+- Each union-find operation is almost constant time in the amortized sense, so the
+  `E` union/find calls cost `O(E α(V))`.
+- Initializing the disjoint-set structure is `O(V)`.
+
+If the edges are already sorted, the dominating step disappears. Then the algorithm
+is essentially `O(V + E α(V))`, or `O(E α(V))` for a connected graph, because the
+union-find work is the only remaining nontrivial cost.
 
 ---
 

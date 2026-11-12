@@ -58,6 +58,22 @@ def transplant(tree, u, v):
 
 
 def bst_insert(tree, key):
+  parent = None
+  current = tree.root
+  while current is not None:
+    parent = current
+    if key < current.key:
+      current = current.left
+    else:
+      current = current.right
+  new_node = Node(key, parent=parent)
+  if parent is None:
+    tree.root = new_node
+  elif key < parent.key:
+    parent.left = new_node
+  else:
+    parent.right = new_node
+  return new_node
   """Insert key into tree with parent pointers; return the new Node.
 
   Preconditions: key is comparable and distinct from existing keys in tree.
@@ -68,6 +84,23 @@ def bst_insert(tree, key):
 
 
 def bst_delete(tree, key):
+  z = bst_search(tree.root, key)
+  if z is None:
+    return None
+  if z.left is None:
+    transplant(tree, z, z.right)
+  elif z.right is None:
+    transplant(tree, z, z.left)
+  else:
+    y = tree_minimum(z.right)
+    if y.parent != z:
+      transplant(tree, y, y.right)
+      y.right = z.right
+      y.right.parent = y
+    transplant(tree, z, y)
+    y.left = z.left
+    y.left.parent = y
+  return z
   """Delete key from tree, splicing/replacing nodes; return deleted Node (or None).
 
   Handles 0-child, 1-child, and 2-child cases using the in-order successor.

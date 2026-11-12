@@ -10,7 +10,21 @@ def min_heapify_down(arr, i, heap_size):
   Indices heap_size onward are outside the heap and must not change.
   """
   # TODO 4.2B: Follow the sift-down pseudocode. Check bounds before indexing.
-  raise NotImplementedError("Complete min_heapify_down")
+  while True:
+    smallest = i
+    l = 2 * i + 1
+    r = 2 * i + 2
+
+    if l < heap_size and arr[l] < arr[smallest]:
+      smallest = l
+    if r < heap_size and arr[r] < arr[smallest]:
+      smallest = r
+    if smallest == i:
+      return None
+
+    arr[i], arr[smallest] = arr[smallest], arr[i]
+    i = smallest
+
 
 
 def build_min_heap(arr):
@@ -24,7 +38,8 @@ def heap_sort(arr):
   build_min_heap(arr)
   for end in range(len(arr) - 1, 0, -1):
     # TODO 4.3A: Move the minimum to end and repair the smaller active heap.
-    raise NotImplementedError("Complete the heap_sort loop")
+    arr[0], arr[end] = arr[end], arr[0]
+    min_heapify_down(arr, 0, end)
   return arr
 
 

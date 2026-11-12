@@ -32,10 +32,11 @@ This lab uses two primary tree representations:
 | `bst_practice.py` | Implement `bst_insert` and `bst_delete`; search, minimum, and transplant are provided |
 | `lab_checks.py` | Provided checks; do not edit |
 
-- [ ] Part 1: Max-Heap sift-down trace, Heapsort extraction trace, implementation, and short answers.
-- [ ] Part 2: BST insertion and deletion traces, implementation, and short answers.
-- [ ] Part 3: Compare search paths in degenerate and balanced BSTs.
-- [ ] Run both practice files and resolve all failed checks.
+- [x] Part 1: Max-Heap sift-down trace, Heapsort extraction trace, implementation, and short answers.
+- [x] Part 2: BST insertion and deletion traces, implementation, and short answers.
+- [ ] Part 3: Imbalance search path trace, balance factor calculations, violation diagnostics, and short answers.
+- [ ] Part 4: AVL rotation trace, implementations, and short answers.
+- [ ] Run all three practice files and resolve all failed checks.
 
 Keep the function names and parameters unchanged. Do not use `sorted`,
 `list.sort`, or `heapq` to implement the required functions. The provided checks
